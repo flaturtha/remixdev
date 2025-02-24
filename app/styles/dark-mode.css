@@ -1,0 +1,28 @@
+/* Basic dark mode styles */
+.dark {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark header {
+  background-color: #1a1a1a !important;
+  border-color: #333 !important;
+}
+
+.dark footer {
+  background-color: #1a1a1a !important;
+  border-color: #333 !important;
+}
+
+.dark button:not([class*="bg-"]) {
+  background-color: #333;
+  color: #fff;
+}
+
+.dark input, 
+.dark textarea, 
+.dark select {
+  background-color: #333;
+  color: #fff;
+  border-color: #555;
+} 

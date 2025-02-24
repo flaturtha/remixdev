@@ -1,0 +1,75 @@
+/* Final dark mode styles with maximum specificity */
+html.dark,
+html.dark body {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+}
+
+html.dark header {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: #333333 !important;
+}
+
+html.dark footer {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: #333333 !important;
+}
+
+html.dark button {
+  color: #ffffff !important;
+}
+
+html.dark a {
+  color: #bb86fc !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+  border-color: #555555 !important;
+}
+
+/* Force dark mode for specific elements */
+.dark .bg-white {
+  background-color: #1a1a1a !important;
+}
+
+.dark .text-gray-800 {
+  color: #e0e0e0 !important;
+}
+
+.dark .border-gray-100 {
+  border-color: #333333 !important;
+}
+
+/* Add this to your final-dark.css */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Add this to your final-dark.css */
+html.dark img:not([src*=".svg"]) {
+  filter: brightness(0.8) contrast(1.2);
+}
+
+/* Adjust product images differently than content images */
+.dark .product-image {
+  filter: brightness(0.9) contrast(1.1);
+}
+
+.dark .content-image {
+  filter: brightness(0.8) contrast(1.2) saturate(0.9);
+}
+
+/* Special adjustment for vintage mystery images */
+.dark img[src*="vintage-mystery-sampler"] {
+  filter: brightness(0.85) contrast(1.15) sepia(0.15);
+} 

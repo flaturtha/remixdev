@@ -1,0 +1,38 @@
+/* Direct dark mode styles with high specificity */
+html.dark {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+}
+
+html.dark body {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+}
+
+html.dark header {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: #333333 !important;
+}
+
+html.dark footer {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: #333333 !important;
+}
+
+html.dark button {
+  color: #ffffff !important;
+}
+
+html.dark a {
+  color: #bb86fc !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+  border-color: #555555 !important;
+} 

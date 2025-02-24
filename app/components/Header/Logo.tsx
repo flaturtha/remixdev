@@ -4,12 +4,12 @@ export default function Logo() {
   return (
     <Link to="/" className="flex items-center">
       <img
-        src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo_full-SeQHREkB92sFihqEM8id69rzfNajdL.png"
+        src="/images/logo_full.svg"
         alt="Tales of Murder"
-        width={300}
-        height={60}
-        className="w-full max-w-[300px] h-auto"
+        className="h-8 xs:h-9 md:h-10 w-auto"
       />
+      {/* Optional: Add text logo with Breamcatcher font */}
+      {/* <span className="ml-2 text-2xl font-breamcatcher">Tales of Murder</span> */}
     </Link>
   )
 } 

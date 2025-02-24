@@ -1,3 +1,5 @@
+import { useState } from "react";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -5,41 +7,80 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
-
-import "./tailwind.css";
+import Header from "~/components/Header";
+import Footer from "~/components/Footer";
+import FacebookPixel from "~/components/FacebookPixel";
+import KlaviyoScript from '~/components/KlaviyoScript';
+import GoogleTagManager from '~/components/GoogleTagManager';
+import DevTools from "~/components/DevTools";
+import PageTransition from "~/components/PageTransition";
+import ScrollToTop from "~/components/ScrollToTop";
+import ReadingProgress from "~/components/ReadingProgress";
+import NewsBanner from "~/components/NewsBanner";
+import CookieConsent from "~/components/CookieConsent";
 
 export const links: LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
+  { rel: "stylesheet", href: "/app/tailwind.css" },
+  { rel: "stylesheet", href: "/app/styles/globals.css" },
+  { rel: "stylesheet", href: "/styles/simple-dark.css" },
+  { rel: "stylesheet", href: "/styles/dark-mode.css" },
+  { rel: "stylesheet", href: "/styles/direct-dark.css" },
+  { rel: "stylesheet", href: "/styles/final-dark.css" },
+  { rel: "stylesheet", href: "https://fonts.cdnfonts.com/css/breamcatcher" },
+  { rel: "icon", href: "/images/logo_icon.svg", type: "image/svg+xml" },
 ];
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export const meta: MetaFunction = () => {
+  return [];
+};
+
+export default function App() {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
         <Meta />
         <Links />
+        <FacebookPixel />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              try {
+                // Simple dark mode initialization
+                var darkMode = localStorage.getItem('darkMode');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                
+                if (darkMode === 'dark' || (prefersDark && !darkMode)) {
+                  document.documentElement.classList.add('dark');
+                  console.log('Dark mode enabled');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                  console.log('Light mode enabled');
+                }
+              } catch (e) {
+                console.error('Error in dark mode script:', e);
+              }
+            })();
+          `
+        }} />
       </head>
       <body>
-        {children}
+        <ReadingProgress />
+        <GoogleTagManager gtmId="GTM-WTZTP869" />
+        <Header />
+        <NewsBanner />
+        <PageTransition>
+          <Outlet />
+        </PageTransition>
+        <Footer />
         <ScrollRestoration />
         <Scripts />
+        <KlaviyoScript />
+        <CookieConsent />
+        <ScrollToTop />
+        {process.env.NODE_ENV === 'development' && <DevTools />}
       </body>
     </html>
   );
-}
-
-export default function App() {
-  return <Outlet />;
 }

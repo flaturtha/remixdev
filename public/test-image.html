@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Test</title>
+</head>
+<body>
+  <h1>Image Test Page</h1>
+  
+  <h2>Test 1: Original Image Path</h2>
+  <img src="/images/vintage-mystery-sampler_200x200.jpg" alt="Test 1" width="200" height="200">
+  
+  <h2>Test 2: Simplified Image Path</h2>
+  <img src="/images/vintage-crime.jpg" alt="Test 2" width="200" height="200">
+  
+  <h2>Test 3: Relative Path</h2>
+  <img src="images/vintage-mystery-sampler_200x200.jpg" alt="Test 3" width="200" height="200">
+  
+  <h2>Test 4: Known Working Image</h2>
+  <img src="/images/logo_full.svg" alt="Test 4" width="200" height="200">
+  
+  <script>
+    // Log all image paths
+    document.querySelectorAll('img').forEach(img => {
+      console.log(`Testing image: ${img.src}`);
+      img.onerror = function() {
+        console.error(`Failed to load: ${this.src}`);
+        this.style.border = '2px solid red';
+        this.style.padding = '10px';
+        this.src = 'https://placehold.co/600x400/f8f5f0/333333?text=Image+Not+Found';
+      };
+      img.onload = function() {
+        console.log(`Successfully loaded: ${this.src}`);
+        this.style.border = '2px solid green';
+        this.style.padding = '10px';
+      };
+    });
+  </script>
+</body>
+</html> 

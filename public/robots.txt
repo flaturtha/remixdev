@@ -1,0 +1,12 @@
+# Allow all crawlers
+User-agent: *
+
+# Allow crawling of all content
+Allow: /
+
+# Prevent crawling of any private or admin routes
+Disallow: /admin/
+Disallow: /private/
+
+# Sitemap location
+Sitemap: https://talesofmurder.com/sitemap.xml 

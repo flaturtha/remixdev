@@ -1,0 +1,23 @@
+@import url('https://fonts.cdnfonts.com/css/breamcatcher');
+
+.landing-page {
+  min-height: 100vh;
+  background-color: rgb(17, 24, 39);
+  color: white;
+}
+
+.hero-section {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: rgb(229, 231, 235);
+  background-image: linear-gradient(to bottom right, #f3f4f6, #e5e7eb);
+}
+
+/* Form focus styles */
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}

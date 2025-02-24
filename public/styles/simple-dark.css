@@ -1,0 +1,13 @@
+/* Super simple dark mode styles */
+.dark {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+}
+
+.dark header {
+  background-color: #1a1a1a !important;
+}
+
+.dark footer {
+  background-color: #1a1a1a !important;
+} 
