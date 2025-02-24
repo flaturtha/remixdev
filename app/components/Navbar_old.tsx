@@ -1,6 +1,13 @@
+/**
+ * @deprecated This component has been replaced by the modular Header component in ~/components/Header/index.tsx
+ * Please use the new Header component instead.
+ */
+
 import { Link } from "@remix-run/react";
 
 const Navbar = () => {
+    console.warn("Using deprecated Navbar_old component. Please use the new Header component from ~/components/Header instead.");
+    
     return (
         <nav className="fixed top-0 left-0 w-full z-50 bg-gray-900 bg-opacity-65 border-gray-200 py-2.5 dark:bg-gray-900">
             <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
