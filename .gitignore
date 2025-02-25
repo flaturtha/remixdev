@@ -49,3 +49,5 @@ local.properties
 # Typescript
 *.tsbuildinfo
 next-env.d.ts
+
+bfg.jar
