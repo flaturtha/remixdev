@@ -3,7 +3,7 @@ import { useLoaderData, Link } from '@remix-run/react';
 import { useState } from 'react';
 import { Home, ShoppingCart, Heart, Share2 } from 'lucide-react';
 import { Container } from '~/components/common/container';
-import { Breadcrumbs } from '~/components/common/breadcrumbs';
+import { Breadcrumbs } from '~/components/common/Breadcrumbs';
 import { Button } from '~/components/ui/button';
 import { generateDummyProducts } from '~/lib/dummy-data';
 import { AnimatedProductImage } from "~/components/product/AnimatedProductImage";
@@ -69,18 +69,78 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   
   // Get related products
   const relatedProducts = dummyProducts.filter(p => p.id !== product.id).slice(0, 4);
-  
-  return json({ product, relatedProducts });
+
+  // In the loader function, check if there's a collection context:
+  const collectionHandle = params.searchParams.get('collection');
+  let collectionData = null;
+
+  if (collectionHandle) {
+    // Fetch the collection data (using dummy data for now)
+    const collections = [
+      { id: 'col_1', title: 'New Arrivals', handle: 'new-arrivals' },
+      { id: 'col_2', title: 'Best Sellers', handle: 'best-sellers' },
+      { id: 'col_3', title: 'Sale', handle: 'sale' },
+      { id: 'vintage_crime', title: 'Vintage Crime', handle: 'vintage-crime' },
+      { id: 'bradys', title: 'Brady\'s Secret Service', handle: 'bradys-secret-service' }
+    ];
+    
+    collectionData = collections.find(c => c.handle === collectionHandle);
+  }
+
+  // Add to the loader function:
+  const categoryHandle = params.searchParams.get('category');
+  let categoryData = null;
+
+  if (categoryHandle) {
+    // Fetch the category data (using dummy data for now)
+    const categories = [
+      { id: 'cat_1', name: 'Mystery', handle: 'mystery' },
+      { id: 'cat_2', name: 'Crime', handle: 'crime' },
+      { id: 'cat_3', name: 'Detective', handle: 'detective' }
+    ];
+    
+    categoryData = categories.find(c => c.handle === categoryHandle);
+  }
+
+  // Return the collection data with the loader data
+  return json({
+    product,
+    relatedProducts,
+    collectionData,
+    categoryData
+  });
 };
 
 export default function ProductDetailPage() {
-  const { product, relatedProducts } = useLoaderData<typeof loader>();
+  const { product, relatedProducts, collectionData, categoryData } = useLoaderData<typeof loader>();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({
     opt_size: "Medium",
     opt_color: "Blue"
   });
+
+  // Determine breadcrumb items based on context
+  let breadcrumbItems = [];
+
+  if (collectionData) {
+    breadcrumbItems = [
+      { label: 'Collections', href: '/collections' },
+      { label: collectionData.title, href: `/collections/${collectionData.handle}` },
+      { label: product.title }
+    ];
+  } else if (categoryData) {
+    breadcrumbItems = [
+      { label: 'Categories', href: '/categories' },
+      { label: categoryData.name, href: `/categories/${categoryData.handle}` },
+      { label: product.title }
+    ];
+  } else {
+    breadcrumbItems = [
+      { label: 'Books', href: '/products' },
+      { label: product.title }
+    ];
+  }
 
   // Breadcrumbs for navigation
   const breadcrumbs = [
@@ -117,11 +177,8 @@ export default function ProductDetailPage() {
   }).format(product.price.amount);
 
   return (
-    <Container className="py-12">
-      {/* Breadcrumbs */}
-      <div className="mb-8">
-        <Breadcrumbs breadcrumbs={breadcrumbs} />
-      </div>
+    <Container className="pb-16">
+      <Breadcrumbs items={breadcrumbItems} />
 
       {/* Product Detail */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">

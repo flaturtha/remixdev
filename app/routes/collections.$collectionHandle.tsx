@@ -1,14 +1,14 @@
-import { Button } from "~/components/ui/button";
 import { Container } from '~/components/common/container';
 import { ProductListWithPagination } from '~/components/product/ProductListWithPagination';
-import { LoaderFunctionArgs } from '@remix-run/node';
-import { useLoaderData, Link } from '@remix-run/react';
+import { LoaderFunctionArgs, redirect } from '@remix-run/node';
+import { NavLink, useLoaderData } from '@remix-run/react';
+import clsx from 'clsx';
 import { generateDummyProducts } from '~/lib/dummy-data';
 import { FilterBar } from '~/components/product/FilterBar';
-import { ChevronRight, Home } from 'lucide-react';
 import { Breadcrumbs } from '~/components/common/Breadcrumbs';
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+  const handle = params.collectionHandle as string;
   const url = new URL(request.url);
   
   // Get filter parameters
@@ -21,8 +21,19 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const offset = parseInt(url.searchParams.get('offset') || '0');
   const limit = parseInt(url.searchParams.get('limit') || '12');
 
+  // TODO: Replace with actual API calls when ready
+  const collectionsData = [
+    { id: 'col_1', title: 'New Arrivals', handle: 'new-arrivals' },
+    { id: 'col_2', title: 'Best Sellers', handle: 'best-sellers' },
+    { id: 'col_3', title: 'Sale', handle: 'sale' }
+  ];
+
+  const collection = collectionsData.find((collection) => collection.handle === handle);
+
+  if (!collection) throw redirect('/products');
+
   // Generate dummy products
-  let products = generateDummyProducts(50);
+  let products = generateDummyProducts(30);
   let count = products.length;
   
   // Apply filters (in a real app, this would be done in the database query)
@@ -37,13 +48,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (periods.length > 0) {
     products = products.filter(product => {
       // Simulate publication period with the tags field
-      const productPeriod = product.tags?.find(tag => 
-        ['pre_1900', 'victorian', 'edwardian', 'roaring_20s'].includes(tag)
-      ) || '';
+      const productPeriod = product.tags?.[0] || '';
       return periods.includes(productPeriod);
     });
   }
   
+  // Apply collection filters
   if (collections.length > 0) {
     products = products.filter(product => {
       return collections.includes(product.collection || '');
@@ -61,7 +71,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     products, 
     count, 
     limit, 
-    offset,
+    offset, 
+    collections: collectionsData, 
+    collection,
     activeFilters: {
       editions,
       periods,
@@ -92,35 +104,59 @@ function sortProducts(products, sortOption) {
   }
 }
 
-export type ProductsRouteLoader = typeof loader;
+export type ProductCollectionRouteLoader = typeof loader;
 
-export default function ProductsRoute() {
-  const data = useLoaderData<ProductsRouteLoader>();
+export default function ProductCollectionRoute() {
+  const data = useLoaderData<ProductCollectionRouteLoader>();
 
   if (!data) return null;
 
-  const { products, count, limit, offset, activeFilters } = data;
+  const { products, count, limit, offset, collections, collection, activeFilters } = data;
 
   return (
     <Container className="pb-16">
       <Breadcrumbs 
         items={[
-          { label: 'Books' }
+          { label: 'Collections', href: '/collections' },
+          { label: collection.title }
         ]}
       />
 
-      <h1 className="w-full text-center text-5xl xs:text-6xl md:text-8xl font-serif mt-12 font-normal">
-        All Books
+      <h1 className="w-full text-center text-5xl xs:text-6xl md:text-8xl font-serif mt-24 font-normal">
+        {collection.title}
       </h1>
 
-      <div className="flex flex-col gap-4 sm:flex-row mt-8">
+      {collections.length > 1 && (
+        <div className="flex flex-col w-full items-center">
+          <div className="flex-1">
+            <div className="inline-flex gap-5 text-2xl font-serif border-b border-primary mt-4 mb-8">
+              {collections.map((collection) => (
+                <NavLink
+                  to={`/collections/${collection.handle}`}
+                  key={collection.id}
+                  className={({ isActive }) =>
+                    clsx('h-full p-4', {
+                      'font-bold border-b-2 border-primary': isActive,
+                      '!border-none active:': !isActive,
+                    })
+                  }
+                >
+                  {collection.title}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-1">
           <FilterBar totalProducts={count} activeFilters={activeFilters} />
           
           <ProductListWithPagination
             products={products}
             paginationConfig={{ count, offset, limit }}
-            context="products"
+            context="collections"
           />
         </div>
       </div>

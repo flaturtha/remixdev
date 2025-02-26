@@ -1,14 +1,14 @@
-import { Button } from "~/components/ui/button";
-import { Container } from '~/components/common/container';
+import { LoaderFunctionArgs, redirect } from '@remix-run/node';
+import { NavLink, useLoaderData } from '@remix-run/react';
 import { ProductListWithPagination } from '~/components/product/ProductListWithPagination';
-import { LoaderFunctionArgs } from '@remix-run/node';
-import { useLoaderData, Link } from '@remix-run/react';
+import { Container } from '~/components/common/container';
+import clsx from 'clsx';
 import { generateDummyProducts } from '~/lib/dummy-data';
 import { FilterBar } from '~/components/product/FilterBar';
-import { ChevronRight, Home } from 'lucide-react';
 import { Breadcrumbs } from '~/components/common/Breadcrumbs';
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+  const handle = params.categoryHandle as string;
   const url = new URL(request.url);
   
   // Get filter parameters
@@ -21,8 +21,21 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const offset = parseInt(url.searchParams.get('offset') || '0');
   const limit = parseInt(url.searchParams.get('limit') || '12');
 
+  // TODO: Replace with actual API calls when ready
+  const categories = [
+    { id: 'cat_1', name: 'Clothing', handle: 'clothing' },
+    { id: 'cat_2', name: 'Accessories', handle: 'accessories' },
+    { id: 'cat_3', name: 'Footwear', handle: 'footwear' }
+  ];
+
+  const category = categories.find((c) => c.handle === handle);
+
+  if (!category) {
+    throw redirect('/products');
+  }
+
   // Generate dummy products
-  let products = generateDummyProducts(50);
+  let products = generateDummyProducts(30);
   let count = products.length;
   
   // Apply filters (in a real app, this would be done in the database query)
@@ -37,16 +50,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (periods.length > 0) {
     products = products.filter(product => {
       // Simulate publication period with the tags field
-      const productPeriod = product.tags?.find(tag => 
-        ['pre_1900', 'victorian', 'edwardian', 'roaring_20s'].includes(tag)
-      ) || '';
+      const productPeriod = product.tags?.[0] || '';
       return periods.includes(productPeriod);
-    });
-  }
-  
-  if (collections.length > 0) {
-    products = products.filter(product => {
-      return collections.includes(product.collection || '');
     });
   }
   
@@ -57,11 +62,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   count = products.length;
   products = products.slice(offset, offset + limit);
 
-  return { 
-    products, 
-    count, 
-    limit, 
+  // Apply collection filters
+  if (collections.length > 0) {
+    products = products.filter(product => {
+      return collections.includes(product.collection || '');
+    });
+  }
+
+  return {
+    products,
+    count,
+    limit,
     offset,
+    category,
+    categories,
     activeFilters: {
       editions,
       periods,
@@ -92,35 +106,60 @@ function sortProducts(products, sortOption) {
   }
 }
 
-export type ProductsRouteLoader = typeof loader;
+export type ProductCategoryRouteLoader = typeof loader;
 
-export default function ProductsRoute() {
-  const data = useLoaderData<ProductsRouteLoader>();
+export default function ProductCategoryRoute() {
+  const data = useLoaderData<ProductCategoryRouteLoader>();
 
   if (!data) return null;
 
-  const { products, count, limit, offset, activeFilters } = data;
+  const { products, count, limit, offset, categories, category, activeFilters } = data;
 
   return (
     <Container className="pb-16">
       <Breadcrumbs 
         items={[
-          { label: 'Books' }
+          { label: 'Categories', href: '/categories' },
+          { label: category.name }
         ]}
       />
 
-      <h1 className="w-full text-center text-5xl xs:text-6xl md:text-8xl font-serif mt-12 font-normal">
-        All Books
+      <h1 className="w-full text-center text-5xl xs:text-6xl md:text-8xl font-serif mt-24 font-normal">
+        {category.name}
       </h1>
 
-      <div className="flex flex-col gap-4 sm:flex-row mt-8">
+      {categories.length > 1 && (
+        <div className="flex flex-col w-full items-center">
+          <div className="flex-1">
+            <div className="inline-flex gap-5 text-2xl font-serif border-b border-primary mt-4 mb-8">
+              {categories.map((category) => (
+                <NavLink
+                  to={`/categories/${category.handle}`}
+                  key={category.id}
+                  prefetch="viewport"
+                  className={({ isActive }) =>
+                    clsx('h-full p-4', {
+                      'font-bold border-b-2 border-primary': isActive,
+                      '!border-none active:': !isActive,
+                    })
+                  }
+                >
+                  {category.name}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-1">
           <FilterBar totalProducts={count} activeFilters={activeFilters} />
           
           <ProductListWithPagination
             products={products}
             paginationConfig={{ count, offset, limit }}
-            context="products"
+            context="categories"
           />
         </div>
       </div>
