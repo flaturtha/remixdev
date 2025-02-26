@@ -19,7 +19,6 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  console.log("Image path:", "/images/old-cap-collier.png");
 
   return (
     <div className="flex flex-col">

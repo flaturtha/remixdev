@@ -16,3 +16,9 @@ startTransition(() => {
     </StrictMode>
   );
 });
+
+if (document.startViewTransition) {
+  console.log("View Transitions API is supported");
+} else {
+  console.log("View Transitions API is not supported");
+}
