@@ -67,7 +67,8 @@ export default function App() {
       </head>
       <body>
         <ReadingProgress />
-        <GoogleTagManager gtmId="GTM-WTZTP869" />
+        {/* PRODUCTION TODO: Uncomment the GoogleTagManager component before deploying to production */}
+        {/* <GoogleTagManager gtmId="YOUR_GTM_ID" /> */}
         <Header />
         <NewsBanner />
         <PageTransition>

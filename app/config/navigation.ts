@@ -6,6 +6,8 @@ export type NavItem = {
   path: string;
   isButton?: boolean;
   className?: string;
+  // isExternal?: boolean;  // Uncomment when linking to external sites
+  // externalUrl?: string;  // Uncomment when linking to external sites
 };
 
 // Main navigation items
@@ -21,6 +23,9 @@ export const mainNavItems: NavItem[] = [
   {
     title: "Murderwiki",
     path: "/murderwiki",
+    // PRODUCTION TODO: When MurderWiki is deployed, uncomment and update these lines:
+    // isExternal: true,
+    // externalUrl: "https://murderwiki.talesofmurder.com" // Update with production URL
   },
 ];
 

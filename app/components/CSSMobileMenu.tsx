@@ -23,16 +23,31 @@ export default function CSSMobileMenu() {
           <ul className="space-y-4 max-w-lg mx-auto">
             {allNavItems.map((item) => (
               <li key={item.path}>
-                <Link 
-                  to={item.path} 
-                  className={item.isButton 
-                    ? "block py-2 text-lg text-white bg-[#8b0000] hover:bg-[#6d0000] px-4 rounded-md transition-colors"
-                    : "block py-2 text-lg text-gray-800 hover:text-gray-600 font-breamcatcher"
-                  }
-                  onClick={() => document.getElementById('mobile-menu-toggle')?.click()}
-                >
-                  {item.title}
-                </Link>
+                {item.isExternal ? (
+                  <a 
+                    href={item.externalUrl}
+                    className={item.isButton 
+                      ? "block py-2 text-lg text-white bg-[#8b0000] hover:bg-[#6d0000] px-4 rounded-md transition-colors"
+                      : "block py-2 text-lg text-gray-800 hover:text-gray-600 font-breamcatcher"
+                    }
+                    onClick={() => document.getElementById('mobile-menu-toggle')?.click()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.title}
+                  </a>
+                ) : (
+                  <Link 
+                    to={item.path} 
+                    className={item.isButton 
+                      ? "block py-2 text-lg text-white bg-[#8b0000] hover:bg-[#6d0000] px-4 rounded-md transition-colors"
+                      : "block py-2 text-lg text-gray-800 hover:text-gray-600 font-breamcatcher"
+                    }
+                    onClick={() => document.getElementById('mobile-menu-toggle')?.click()}
+                  >
+                    {item.title}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
