@@ -13,9 +13,9 @@ export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+    <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
       {/* Top row with search and icons */}
-      <div className="border-b border-gray-100 dark:border-gray-800 py-2">
+      <div className="py-2">
         <div className="container mx-auto px-4 grid grid-cols-12 items-center">
           {/* Left empty space */}
           <div className="hidden md:block md:col-span-3"></div>
@@ -36,12 +36,12 @@ export default function Header() {
           
           {/* Right-aligned icons */}
           <div className="hidden md:flex md:col-span-3 items-center space-x-4 justify-end">
-            <Link to="/account" className="text-gray-800 dark:text-gray-200 hover:text-gray-600 transition-colors">
+            <Link to="/account" className="text-gray-800 hover:text-gray-600 transition-colors">
               <User className="h-5 w-5" />
               <span className="sr-only">Account</span>
             </Link>
             
-            <Link to="/cart" className="text-gray-800 dark:text-gray-200 hover:text-gray-600 transition-colors">
+            <Link to="/cart" className="text-gray-800 hover:text-gray-600 transition-colors">
               <ShoppingBag className="h-5 w-5" />
               <span className="sr-only">Cart</span>
             </Link>
@@ -76,11 +76,11 @@ export default function Header() {
           
           {/* Mobile menu toggle and icons - only visible on mobile */}
           <div className="col-span-9 md:hidden flex items-center justify-end space-x-4">
-            <Link to="/account" className="text-gray-800 dark:text-gray-200 hover:text-gray-600 transition-colors">
+            <Link to="/account" className="text-gray-800 hover:text-gray-600 transition-colors">
               <User className="h-5 w-5" />
             </Link>
             
-            <Link to="/cart" className="text-gray-800 dark:text-gray-200 hover:text-gray-600 transition-colors">
+            <Link to="/cart" className="text-gray-800 hover:text-gray-600 transition-colors">
               <ShoppingBag className="h-5 w-5" />
             </Link>
             
