@@ -1,7 +1,7 @@
 import { Breadcrumbs } from '~/components/common/breadcrumbs';
 import { Container } from '~/components/common/container';
 import { ProductListWithPagination } from '~/components/product/ProductListWithPagination';
-import { Home, Book } from 'lucide-react';
+import { Home, Package } from 'lucide-react';
 import { LoaderFunctionArgs, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { generateDummyProducts } from '~/lib/dummy-data';
@@ -9,7 +9,7 @@ import { generateDummyProducts } from '~/lib/dummy-data';
 export const meta = () => {
   return [
     { title: "Mystery Bundles | Vintage Mystery Library | Tales of Murder" },
-    { name: "description", content: "Save with our value-packed bundles of classic detective and mystery fiction from the golden age of mystery." },
+    { name: "description", content: "Explore our value-packed bundles of multiple vintage mystery titles at special discount prices." },
   ];
 };
 
@@ -21,13 +21,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const offset = Number(searchParams.get('offset') || 0);
   const sort = searchParams.get('sort') || 'newest';
   
-  // Generate dummy products and filter to only bundles
-  // This will be replaced with a Sanity query that filters by type
-  const allProducts = generateDummyProducts(10);
+  // Generate dummy products
+  // This will be replaced with a Sanity query for bundles
+  const allProducts = generateDummyProducts(20);
   
-  // Filter to only include bundles
+  // For now, we'll identify bundles by checking if they have specific tags
+  // In a real implementation, we would query specifically for bundles from Sanity
+  // Let's pretend that bundles are identified by having "collection" in their tags
   let filteredProducts = allProducts
-    .filter(product => product.tags?.some(tag => tag.includes('bundle')));
+    .filter(product => product.tags?.some(tag => tag === 'vintage_crime'));
   
   // Apply sorting based on the sort parameter
   if (sort === 'newest') {
@@ -59,11 +61,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function LibraryBundlesRoute() {
   const data = useLoaderData<typeof loader>();
-
+  
   if (!data) return null;
-
+  
   const { products, count, limit, offset } = data;
-
+  
   const breadcrumbs = [
     {
       label: (
@@ -82,23 +84,24 @@ export default function LibraryBundlesRoute() {
       label: 'Bundles',
     },
   ];
-
+  
   return (
-    <Container className="py-8">
+    <Container className="pt-0 pb-8">
       <Breadcrumbs breadcrumbs={breadcrumbs} className="mb-6" />
       
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-gray-100 mb-4">
+        <h1 className="text-3xl md:text-4xl font-serif font-bold text-black mb-4">
           Mystery Bundles
         </h1>
-        <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl">
-          Save with our value-packed bundles combining multiple titles at discounted prices.
-          Perfect for collectors or for exploring the works of a particular author or theme.
+        <p className="text-lg text-gray-800 max-w-3xl">
+          Discover our specially curated bundles of vintage mystery stories at discounted prices. 
+          Each bundle contains multiple titles grouped by author, theme, or series, offering 
+          exceptional value for mystery enthusiasts.
         </p>
       </div>
       
-      <ProductListWithPagination
-        products={products}
+      <ProductListWithPagination 
+        products={products} 
         paginationConfig={{ count, offset, limit }}
         context="library/bundles"
       />

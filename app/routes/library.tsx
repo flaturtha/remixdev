@@ -16,6 +16,13 @@ export async function loader() {
   return json({
     categories: [
       {
+        id: "all",
+        name: "All",
+        path: "/library",
+        icon: Archive,
+        description: "Browse our complete collection"
+      },
+      {
         id: "novels",
         name: "Novels",
         path: "/library/novels",
@@ -60,7 +67,7 @@ export default function LibraryLayout() {
 
   // Helper function to determine if a tab is active
   const isActive = (path: string) => {
-    if (currentPath === "/library" && path === "/library") {
+    if (path === "/library" && currentPath === "/library") {
       return true;
     }
     return path !== "/library" && currentPath.startsWith(path);
@@ -81,90 +88,127 @@ export default function LibraryLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Navigation tabs */}
-      <div className="bg-white dark:bg-gray-800 shadow">
+    <div className="min-h-screen bg-white">
+      {/* Categories Navigation */}
+      <div className="bg-white border-t border-b border-gray-200 py-4 mb-6">
         <Container>
-          <nav className="flex overflow-x-auto py-4">
-            <div className="flex space-x-4 sm:space-x-8">
+          <div className="flex justify-center">
+            <div className="grid grid-cols-6 md:grid-cols-6 sm:grid-cols-3 xs:grid-cols-2 w-full max-w-4xl gap-2 overflow-x-auto">
+              {/* All */}
               <Link
                 to="/library"
                 className={cn(
-                  "inline-flex items-center py-2 px-1 text-sm font-medium border-b-2 -mb-px",
+                  "flex flex-col items-center justify-center py-4 px-2 rounded-lg transition-colors",
                   isActive("/library") && currentPath === "/library"
-                    ? "border-primary-500 text-primary-600 dark:text-primary-400"
-                    : "border-transparent text-gray-600 hover:text-gray-700 hover:border-gray-300 dark:text-gray-300 dark:hover:text-gray-100"
+                    ? "bg-gray-100 text-black"
+                    : "hover:bg-gray-50 text-gray-800"
                 )}
               >
-                All
+                <Archive className={cn(
+                  "h-6 w-6 mb-2",
+                  isActive("/library") && currentPath === "/library"
+                    ? "text-black"
+                    : "text-gray-600"
+                )} />
+                <span className="font-serif text-lg">All</span>
               </Link>
               
+              {/* Novels */}
               <Link
                 to="/library/novels"
                 className={cn(
-                  "inline-flex items-center py-2 px-1 text-sm font-medium border-b-2 -mb-px",
+                  "flex flex-col items-center justify-center py-4 px-2 rounded-lg transition-colors",
                   isActive("/library/novels")
-                    ? "border-primary-500 text-primary-600 dark:text-primary-400"
-                    : "border-transparent text-gray-600 hover:text-gray-700 hover:border-gray-300 dark:text-gray-300 dark:hover:text-gray-100"
+                    ? "bg-gray-100 text-black"
+                    : "hover:bg-gray-50 text-gray-800"
                 )}
               >
-                <Book className="h-4 w-4 mr-2" />
-                Novels
+                <Book className={cn(
+                  "h-6 w-6 mb-2",
+                  isActive("/library/novels")
+                    ? "text-black"
+                    : "text-gray-600"
+                )} />
+                <span className="font-serif text-lg">Novels</span>
               </Link>
               
+              {/* Novellas */}
               <Link
                 to="/library/novellas"
                 className={cn(
-                  "inline-flex items-center py-2 px-1 text-sm font-medium border-b-2 -mb-px",
+                  "flex flex-col items-center justify-center py-4 px-2 rounded-lg transition-colors",
                   isActive("/library/novellas")
-                    ? "border-primary-500 text-primary-600 dark:text-primary-400"
-                    : "border-transparent text-gray-600 hover:text-gray-700 hover:border-gray-300 dark:text-gray-300 dark:hover:text-gray-100"
+                    ? "bg-gray-100 text-black"
+                    : "hover:bg-gray-50 text-gray-800"
                 )}
               >
-                <BookOpen className="h-4 w-4 mr-2" />
-                Novellas
+                <BookOpen className={cn(
+                  "h-6 w-6 mb-2",
+                  isActive("/library/novellas")
+                    ? "text-black"
+                    : "text-gray-600"
+                )} />
+                <span className="font-serif text-lg">Novellas</span>
               </Link>
               
+              {/* Novelettes */}
               <Link
                 to="/library/novelettes"
                 className={cn(
-                  "inline-flex items-center py-2 px-1 text-sm font-medium border-b-2 -mb-px",
+                  "flex flex-col items-center justify-center py-4 px-2 rounded-lg transition-colors",
                   isActive("/library/novelettes")
-                    ? "border-primary-500 text-primary-600 dark:text-primary-400"
-                    : "border-transparent text-gray-600 hover:text-gray-700 hover:border-gray-300 dark:text-gray-300 dark:hover:text-gray-100"
+                    ? "bg-gray-100 text-black"
+                    : "hover:bg-gray-50 text-gray-800"
                 )}
               >
-                <BookText className="h-4 w-4 mr-2" />
-                Novelettes
+                <BookText className={cn(
+                  "h-6 w-6 mb-2",
+                  isActive("/library/novelettes")
+                    ? "text-black"
+                    : "text-gray-600"
+                )} />
+                <span className="font-serif text-lg">Novelettes</span>
               </Link>
               
+              {/* Collections */}
               <Link
                 to="/library/collections"
                 className={cn(
-                  "inline-flex items-center py-2 px-1 text-sm font-medium border-b-2 -mb-px",
+                  "flex flex-col items-center justify-center py-4 px-2 rounded-lg transition-colors",
                   isActive("/library/collections")
-                    ? "border-primary-500 text-primary-600 dark:text-primary-400"
-                    : "border-transparent text-gray-600 hover:text-gray-700 hover:border-gray-300 dark:text-gray-300 dark:hover:text-gray-100"
+                    ? "bg-gray-100 text-black"
+                    : "hover:bg-gray-50 text-gray-800"
                 )}
               >
-                <Archive className="h-4 w-4 mr-2" />
-                Collections
+                <Archive className={cn(
+                  "h-6 w-6 mb-2",
+                  isActive("/library/collections")
+                    ? "text-black"
+                    : "text-gray-600"
+                )} />
+                <span className="font-serif text-lg">Collections</span>
               </Link>
               
+              {/* Bundles */}
               <Link
                 to="/library/bundles"
                 className={cn(
-                  "inline-flex items-center py-2 px-1 text-sm font-medium border-b-2 -mb-px",
+                  "flex flex-col items-center justify-center py-4 px-2 rounded-lg transition-colors",
                   isActive("/library/bundles")
-                    ? "border-primary-500 text-primary-600 dark:text-primary-400"
-                    : "border-transparent text-gray-600 hover:text-gray-700 hover:border-gray-300 dark:text-gray-300 dark:hover:text-gray-100"
+                    ? "bg-gray-100 text-black"
+                    : "hover:bg-gray-50 text-gray-800"
                 )}
               >
-                <Package className="h-4 w-4 mr-2" />
-                Bundles
+                <Package className={cn(
+                  "h-6 w-6 mb-2",
+                  isActive("/library/bundles")
+                    ? "text-black"
+                    : "text-gray-600"
+                )} />
+                <span className="font-serif text-lg">Bundles</span>
               </Link>
             </div>
-          </nav>
+          </div>
         </Container>
       </div>
 

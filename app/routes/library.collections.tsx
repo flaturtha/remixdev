@@ -84,7 +84,7 @@ export default function LibraryCollectionsRoute() {
   ];
 
   return (
-    <Container className="py-8">
+    <Container className="pt-0 pb-8">
       <Breadcrumbs breadcrumbs={breadcrumbs} className="mb-6" />
       
       <div className="mb-8">

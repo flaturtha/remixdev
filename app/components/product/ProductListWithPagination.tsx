@@ -38,7 +38,7 @@ export function ProductListWithPagination({
             {currentPage > 1 && (
               <Link
                 to={getPageUrl(currentPage - 1)}
-                className="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                className="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
               >
                 Previous
               </Link>
@@ -50,8 +50,8 @@ export function ProductListWithPagination({
                 to={getPageUrl(page)}
                 className={`px-3 py-2 rounded-md ${
                   currentPage === page
-                    ? "bg-primary-600 text-white dark:bg-primary-700"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                    ? "bg-blood-red text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
                 {page}
@@ -61,7 +61,7 @@ export function ProductListWithPagination({
             {currentPage < totalPages && (
               <Link
                 to={getPageUrl(currentPage + 1)}
-                className="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                className="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
               >
                 Next
               </Link>

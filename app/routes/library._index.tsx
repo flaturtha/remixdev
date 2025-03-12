@@ -189,7 +189,7 @@ export default function LibraryIndexRoute() {
 
   return (
     <Container className="pb-16">
-      <div className="my-8 flex flex-wrap items-center justify-between gap-4">
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
         <Breadcrumbs breadcrumbs={breadcrumbs} />
         <h1 className="text-3xl font-serif font-bold text-gray-900 dark:text-gray-100">
           Vintage Mystery Library
