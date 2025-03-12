@@ -1,3 +1,5 @@
+import { Link } from "@remix-run/react";
+
 interface BookWithMessageProps {
   imageSrc: string;
   imageAlt: string;
@@ -34,8 +36,12 @@ export default function BookWithMessage({
               {description}
             </p>
             <p className="text-lg text-gray-700 max-w-xl">
-              All books in our collection are available to read free online. Premium purchases such as ebooks, print editions, and audiobooks help fund our ongoing preservation efforts.
-            </p>
+  All books in our collection are available to{" "}
+  <Link to="/read-free/" className="text-[#8b0000] underline">
+    read free online
+  </Link>
+  . Premium purchases such as ebooks, print editions, and audiobooks help fund our ongoing preservation efforts.
+</p>
           </div>
         </div>
       </div>

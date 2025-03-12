@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "@remix-run/react";
 import { Product, PaginationProps } from "~/lib/types";
-import { ProductThumbnail } from "./ProductThumbnail";
-import { navigateWithViewTransition } from "~/utils/view-transitions";
+import { ProductCard } from "./ProductCard";
 
 interface ProductListWithPaginationProps {
   products: Product[];
@@ -14,7 +13,6 @@ export function ProductListWithPagination({
   paginationConfig,
   context = "",
 }: ProductListWithPaginationProps) {
-  const navigate = useNavigate();
   const { count, offset, limit } = paginationConfig;
   const currentPage = Math.floor(offset / limit) + 1;
   const totalPages = Math.ceil(count / limit);
@@ -24,32 +22,12 @@ export function ProductListWithPagination({
     return `/${context}?offset=${newOffset}&limit=${limit}`;
   };
 
-  const handleProductClick = (e: React.MouseEvent<HTMLAnchorElement>, productHandle: string) => {
-    e.preventDefault();
-    navigateWithViewTransition(navigate, `/product-detail/${productHandle}`);
-  };
-
   return (
     <div className="space-y-8">
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map((product) => (
-          <Link
-            key={product.id}
-            to={`/product-detail/${product.handle}`}
-            className="group"
-            prefetch="intent"
-            onClick={(e) => handleProductClick(e, product.handle)}
-          >
-            <ProductThumbnail product={product} />
-            <h3 className="mt-4 text-sm text-gray-700">{product.title}</h3>
-            <p className="mt-1 text-lg font-medium text-gray-900">
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: product.price.currency_code,
-              }).format(product.price.amount)}
-            </p>
-          </Link>
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
 
@@ -60,7 +38,7 @@ export function ProductListWithPagination({
             {currentPage > 1 && (
               <Link
                 to={getPageUrl(currentPage - 1)}
-                className="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
+                className="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 Previous
               </Link>
@@ -72,8 +50,8 @@ export function ProductListWithPagination({
                 to={getPageUrl(page)}
                 className={`px-3 py-2 rounded-md ${
                   currentPage === page
-                    ? "bg-gray-900 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "bg-primary-600 text-white dark:bg-primary-700"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                 }`}
               >
                 {page}
@@ -83,7 +61,7 @@ export function ProductListWithPagination({
             {currentPage < totalPages && (
               <Link
                 to={getPageUrl(currentPage + 1)}
-                className="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
+                className="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 Next
               </Link>

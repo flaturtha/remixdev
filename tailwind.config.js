@@ -21,6 +21,7 @@ export default {
     },
     extend: {
       colors: {
+        "blood-red": "#8b0000",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
