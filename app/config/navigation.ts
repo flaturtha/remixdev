@@ -23,8 +23,8 @@ export const mainNavItems: NavItem[] = [
     externalUrl: "https://murderwiki.talesofmurder.com"
   },
   {
-    title: "Mission",
-    path: "/mission",
+    title: "Our Mission",
+    path: "/about-our-mission",
   },
   {
     title: "Shop & Support",
