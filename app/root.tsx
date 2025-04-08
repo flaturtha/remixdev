@@ -6,6 +6,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useMatches,
 } from "@remix-run/react";
 import Header from "~/components/Header";
 import Footer from "~/components/Footer";
@@ -18,6 +19,11 @@ import ScrollToTop from "~/components/ScrollToTop";
 import ReadingProgress from "~/components/ReadingProgress";
 import NewsBanner from "~/components/NewsBanner";
 import CookieConsent from "~/components/CookieConsent";
+
+// Define the type for route handles
+type RouteHandle = {
+  disableLayout?: boolean;
+};
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: "/app/tailwind.css" },
@@ -35,6 +41,9 @@ export const meta: MetaFunction = () => {
 };
 
 export default function App() {
+  const matches = useMatches();
+  const includeLayout = !matches.some(match => (match.handle as RouteHandle)?.disableLayout);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -66,20 +75,20 @@ export default function App() {
         }} />
       </head>
       <body>
-        <ReadingProgress />
+        {includeLayout && <ReadingProgress />}
         {/* PRODUCTION TODO: Uncomment the GoogleTagManager component before deploying to production */}
         {/* <GoogleTagManager gtmId="YOUR_GTM_ID" /> */}
-        <Header />
-        <NewsBanner />
+        {includeLayout && <Header />}
+        {includeLayout && <NewsBanner />}
         <PageTransition>
           <Outlet />
         </PageTransition>
-        <Footer />
+        {includeLayout && <Footer />}
         <ScrollRestoration />
         <Scripts />
         <KlaviyoScript />
-        <CookieConsent />
-        <ScrollToTop />
+        {includeLayout && <CookieConsent />}
+        {includeLayout && <ScrollToTop />}
         {process.env.NODE_ENV === 'development' && <DevTools />}
       </body>
     </html>
