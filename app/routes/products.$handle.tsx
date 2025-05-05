@@ -7,21 +7,43 @@ import { Breadcrumbs } from '~/components/common/breadcrumbs';
 import { Button } from '~/components/ui/button';
 import { generateDummyProducts } from '~/lib/dummy-data';
 import { Product } from '~/lib/types';
+import { useCart } from '../hooks/useCart'
+
+const MEDUSA_BACKEND_URL = process.env.MEDUSA_BACKEND_URL || 'http://localhost:9000';
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  // TODO: Replace with actual API call to Medusa when ready
   const handle = params.handle;
-  
-  console.log("Looking for product with handle:", handle); // Debug log
-  
-  // Generate all dummy products
+
+  // Try to fetch from Medusa backend
+  try {
+    const res = await fetch(`${MEDUSA_BACKEND_URL}/store/products/${handle}`);
+    if (res.ok) {
+      const medusaProduct: any = await res.json();
+      return json({
+        product: {
+          id: medusaProduct.id,
+          title: medusaProduct.title,
+          description: medusaProduct.description,
+          thumbnail: medusaProduct.thumbnail,
+          price: medusaProduct.variants?.[0]?.prices?.[0] || { amount: 0, currency_code: 'USD' },
+          handle: medusaProduct.handle,
+          images: medusaProduct.images?.map((img: any) => img.url) || [],
+          options: medusaProduct.options || [],
+          variants: medusaProduct.variants || [],
+        } as Product,
+        medusaProduct, // Pass through full Medusa product for debugging
+        relatedProducts: [] as Product[],
+      });
+    }
+  } catch (e) {
+    // Ignore and fall back to dummy
+  }
+
+  // Fallback to dummy data
   const dummyProducts = generateDummyProducts(20);
-  
-  // Try to find the product by handle
   const product = dummyProducts.find(p => p.handle === handle);
-  
   if (!product) {
-    // If product not found, create a fallback product
+    // Fallback product
     return json({
       product: {
         id: `prod_${handle}`,
@@ -62,25 +84,25 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
             prices: [{ amount: 2499, currency_code: "USD" }]
           }
         ]
-      },
-      relatedProducts: dummyProducts.slice(0, 4)
+      } as Product,
+      relatedProducts: dummyProducts.slice(0, 4) as Product[]
     });
   }
-  
-  // Get related products
   const relatedProducts = dummyProducts.filter(p => p.id !== product.id).slice(0, 4);
-  
-  return json({ product, relatedProducts });
+  return json({ product: product as Product, relatedProducts: relatedProducts as Product[] });
 };
 
 export default function ProductDetailPage() {
-  const { product, relatedProducts } = useLoaderData<typeof loader>();
+  // Explicitly cast loader data to Product type to avoid TS errors
+  const { product, relatedProducts, medusaProduct } = useLoaderData<typeof loader>() as { product: any, relatedProducts: any[], medusaProduct?: any };
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({
     opt_size: "Medium",
     opt_color: "Blue"
   });
+  const { addItem } = useCart()
+  const [adding, setAdding] = useState(false)
 
   // Breadcrumbs for navigation
   const breadcrumbs = [
@@ -116,6 +138,16 @@ export default function ProductDetailPage() {
     currency: product.price.currency_code,
   }).format(product.price.amount);
 
+  // Find the selected variant based on selectedOptions
+  const selectedVariant = (product.variants as any[]).find((variant: any) => {
+    if (!variant.options) return true // fallback
+    return variant.options.every((opt: any) => selectedOptions[opt.option_id] === opt.value)
+  })
+
+  if (medusaProduct) {
+    console.log('Medusa product:', medusaProduct);
+  }
+
   return (
     <Container className="py-12">
       {/* Breadcrumbs */}
@@ -138,7 +170,7 @@ export default function ProductDetailPage() {
           {/* Thumbnail Gallery */}
           {product.images && product.images.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
-              {product.images.map((image, index) => (
+              {(product.images as string[]).map((image: string, index: number) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
@@ -176,11 +208,11 @@ export default function ProductDetailPage() {
           {/* Product Options */}
           {product.options && product.options.length > 0 && (
             <div className="mt-8 space-y-6">
-              {product.options.map((option) => (
+              {(product.options as any[]).map((option: any) => (
                 <div key={option.id} className="space-y-2">
                   <h3 className="text-sm font-medium text-gray-900">{option.title}</h3>
                   <div className="grid grid-cols-4 gap-2">
-                    {option.values.map((value) => (
+                    {(option.values as string[]).map((value: string) => (
                       <button
                         key={value}
                         onClick={() => handleOptionChange(option.id, value)}
@@ -221,9 +253,24 @@ export default function ProductDetailPage() {
 
           {/* Add to Cart Button */}
           <div className="mt-8 flex space-x-4">
-            <Button className="flex-1 py-6">
+            <Button
+              className="flex-1 py-6"
+              disabled={adding || !selectedVariant}
+              onClick={async () => {
+                if (!selectedVariant) return
+                setAdding(true)
+                try {
+                  await addItem(product.id, selectedVariant.id, quantity)
+                  alert('Added to cart!')
+                } catch (e) {
+                  alert('Failed to add to cart')
+                } finally {
+                  setAdding(false)
+                }
+              }}
+            >
               <ShoppingCart className="mr-2 h-5 w-5" />
-              Add to Cart
+              {adding ? 'Adding...' : 'Add to Cart'}
             </Button>
             <Button variant="outline" size="icon" className="p-6">
               <Heart className="h-5 w-5" />

@@ -8,9 +8,11 @@ import SearchModal from "~/components/SearchModal";
 import Logo from "~/components/Header/Logo";
 import { Input } from "~/components/ui/input";
 import { ctaButton } from "~/config/navigation";
+import { useCart } from '../hooks/useCart'
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { cart } = useCart()
   
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
@@ -62,6 +64,9 @@ export default function Header() {
           {/* Desktop navigation in center */}
           <nav className="hidden md:flex col-span-6 items-center justify-center space-x-12">
             <NavLinks />
+            <button style={{ marginLeft: 16, fontSize: 24 }} aria-label="Cart">
+              🛒{cart && cart.items.length > 0 ? ` (${cart.items.length})` : ''}
+            </button>
           </nav>
           
           {/* Read Free button on right */}
